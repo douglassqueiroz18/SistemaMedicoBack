@@ -18,27 +18,4 @@ public class MedicaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MedicaApplication.class, args);
 	}
-    @Bean
-    public WebMvcConfigurer corsConfigurer() {
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**")
-                        .allowedOriginPatterns("*") 
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
-            }
-        };
-    }
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable()) // Desabilita proteção contra POST (necessário para testes)
-            .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll() // LIBERA TUDO: Pratos, Mesas, Pedidos, etc.
-            );
-        return http.build();
-    }
-
 }

@@ -53,9 +53,11 @@ public class AgendamentoPacienteService {
 
     @Transactional
     public void cancelar(Long id) {
-        if (!repository.existsById(id)) {
-            throw new RuntimeException("Impossível cancelar: Agendamento não encontrado.");
-        }
-        atualizarStatus(id, "CANCELADO");
+        AgendamentoPaciente agendamento = repository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Agendamento não encontrado"));
+        
+        agendamento.setStatus("CANCELADO");
+        
+        repository.save(agendamento);
     }
 }

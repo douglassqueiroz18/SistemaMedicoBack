@@ -58,9 +58,18 @@ public class PacienteController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        pacienteService.deletar(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deletar(@PathVariable Long id) {
+        try {
+            pacienteService.deletar(id);
+            return ResponseEntity.noContent().build();
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            // Retorna 409 Conflict com a mensagem específica
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body("Não é possível excluir o paciente pois ele possui agendamentos ou prontuários vinculados.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Erro ao excluir paciente.");
+        }
     }
 
 }
